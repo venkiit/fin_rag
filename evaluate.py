@@ -23,20 +23,21 @@ class RagasScorer:
             "context_precision": LLMContextPrecisionWithoutReference(llm=judge),
         }
 
-    def score(self, question: str, answer: str, contexts: list[str]) -> dict:
+    async def ascore(self, question: str, answer: str, contexts: list[str]) -> dict:
+        """Async version - used by the FastAPI app (already inside an event loop)."""
         sample = SingleTurnSample(user_input=question, response=answer, retrieved_contexts=contexts)
+        results = {}
+        for name, metric in self.metrics.items():      # one at a time: simpler, avoids rate limits
+            try:
+                value = await metric.single_turn_ascore(sample)
+                results[name] = None if value is None or math.isnan(value) else round(float(value), 3)
+            except Exception as e:                      # a judge failure must not crash the app
+                results[name] = f"error: {type(e).__name__}"
+        return results
 
-        async def run_all() -> dict:
-            results = {}
-            for name, metric in self.metrics.items():      # one at a time: simpler, avoids rate limits
-                try:
-                    value = await metric.single_turn_ascore(sample)
-                    results[name] = None if value is None or math.isnan(value) else round(float(value), 3)
-                except Exception as e:                      # a judge failure must not crash the app
-                    results[name] = f"error: {type(e).__name__}"
-            return results
-
-        return asyncio.run(run_all())
+    def score(self, question: str, answer: str, contexts: list[str]) -> dict:
+        """Sync version - used from the terminal (answer.py)."""
+        return asyncio.run(self.ascore(question, answer, contexts))
 
 
 def log_result(record: dict) -> None:
@@ -44,3 +45,10 @@ def log_result(record: dict) -> None:
     record = {"timestamp": datetime.now(timezone.utc).isoformat(), **record}
     with LOG_PATH.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def read_log(limit: int = 50) -> list[dict]:
+    if not LOG_PATH.exists():
+        return []
+    lines = LOG_PATH.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in lines if line.strip()][-limit:]
