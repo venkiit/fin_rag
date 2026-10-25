@@ -241,4 +241,4 @@ variant, since live questions have no ground truth). Examples:
 - Units such as "₹ in crores" sit in table headers and can end up in a different chunk from the numbers.
 - The golden set is small (6 questions); "relevant page" is defined by exact answer-value match.
 - Uploaded documents are stored on local disk; on a free hosted Space they reset when it restarts.
-  The Ashok Leyland Annual Reports 2026 index is pre-built and always available.
+  The HCL Annual reports 2026 index is pre-built and always available.
