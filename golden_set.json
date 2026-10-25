@@ -1,0 +1,14 @@
+[
+  {"id": "q1", "question": "What was the total revenue for the year?", "answer": "130,144",
+   "expected_pages": [8, 12, 13, 57, 82, 83, 114, 115, 116, 375, 411, 412, 428, 429]},
+  {"id": "q2", "question": "How many employees does HCLTech have?", "answer": "227,181",
+   "expected_pages": [13, 56, 94, 135, 216, 244, 246, 247, 259]},
+  {"id": "q3", "question": "What was the total dividend paid for the year?", "answer": "14,618",
+   "expected_pages": [12, 57, 122, 127, 304, 379]},
+  {"id": "q4", "question": "What is the employee attrition rate?", "answer": "12.5%",
+   "expected_pages": [94, 135]},
+  {"id": "q5", "question": "What was the net profit for the year?", "answer": "16,642",
+   "expected_pages": [12, 13, 57, 83, 115, 121, 376, 377, 417, 448]},
+  {"id": "q6", "question": "What was the EBIT margin for the year?", "answer": "17.9%",
+   "expected_pages": [83, 123]}
+]
