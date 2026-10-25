@@ -4,3 +4,4 @@ reports/
 eval/
 __pycache__/
 *.pdf
+data/
